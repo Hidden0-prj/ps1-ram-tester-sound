@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ROOT_DIR="$(pwd)"
-BINUTILS_VERSION="2.46"
+BINUTILS_VERSION="2.46.0"
 GCC_VERSION="16.1.0"
 NUM_JOBS="4"
 

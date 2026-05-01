@@ -61,6 +61,11 @@ This repository follows the same overall structure as ps1-bare-metal, so you may
 refer to
 [its build instructions](https://github.com/spicyjpeg/ps1-bare-metal#building-the-examples).
 
+If MAME's `chdman` tool is installed and listed in your `PATH` environment
+variable, it will be automatically used to generate a CHD version of the CD-ROM
+image in addition to the raw `.iso` file. You may also specify its location
+manually by passing `-DCHDMAN_PATH` to CMake while configuring the project.
+
 ## License
 
 As with ps1-bare-metal, everything in this repository is licensed under the MIT
