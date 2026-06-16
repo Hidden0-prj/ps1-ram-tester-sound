@@ -123,114 +123,34 @@ static void resetConfig(
 /* RAM configuration menu */
 
 static const MenuItem ramConfigMenu[] = {
-	{
-		.name     = "Bank size",
-		.type     = ITEM_ENUM,
-		.minValue = 0,
-		.maxValue = 3,
-		.enum_    = {
-			.value = &currentConfig.bankSize,
-			.items = (const char *const[]) {
-				"1 MB",
-				"2 MB (retail/arcade)",
-				"4 MB",
-				"8 MB (dev/arcade)"
-			}
-		}
-	}, {
-		.name     = "Active banks",
-		.type     = ITEM_ENUM,
-		.minValue = 0,
-		.maxValue = 1,
-		.enum_    = {
-			.value = &currentConfig.banks,
-			.items = (const char *const[]) {
-				"/RAS0 only (retail/dev)",
-				"/RAS0 + /RAS1 (arcade)"
-			}
-		}
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name     = "Refresh period",
-		.type     = ITEM_ENUM,
-		.minValue = 0,
-		.maxValue = 3,
-		.enum_    = {
-			.value = &currentConfig.refreshPeriod,
-			.items = (const char *const[]) {
-				"256 cycles",
-				"320 cycles",
-				"384 cycles",
-				"448 cycles"
-			}
-		}
-	}, {
-		.name     = "Fetch conflict delay",
-		.type     = ITEM_ENUM,
-		.minValue = 0,
-		.maxValue = 1,
-		.enum_    = {
-			.value = &currentConfig.fetchDelay,
-			.items = (const char *const[]) {
-				"Disabled",
-				"Enabled"
-			}
-		}
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name      = "Unknown DRAM_CTRL[2:0]",
-		.type      = ITEM_BINARY,
-		.minValue  = 0,
-		.maxValue  = 7,
-		.bitLength = 3,
-		.int_      = { .value = &currentConfig.unknown0 }
-	}, {
-		.name      = "Unknown DRAM_CTRL[3] (timing?)",
-		.type      = ITEM_BINARY,
-		.minValue  = 0,
-		.maxValue  = 1,
-		.bitLength = 1,
-		.int_      = { .value = &currentConfig.unknown3 }
-	}, {
-		.name      = "Unknown DRAM_CTRL[6]",
-		.type      = ITEM_BINARY,
-		.minValue  = 0,
-		.maxValue  = 1,
-		.bitLength = 1,
-		.int_      = { .value = &currentConfig.unknown6 }
-	}, {
-		.name      = "Unknown DRAM_CTRL[8] (size?)",
-		.type      = ITEM_BINARY,
-		.minValue  = 0,
-		.maxValue  = 1,
-		.bitLength = 1,
-		.int_      = { .value = &currentConfig.unknown8 }
-	}, {
-		.name      = "Unknown DRAM_CTRL[15:12]",
-		.type      = ITEM_BINARY,
-		.minValue  =  0,
-		.maxValue  = 15,
-		.bitLength =  4,
-		.int_      = { .value = &currentConfig.unknown12 }
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name   = "Apply settings and exit",
-		.type   = ITEM_ACTION,
-		.action = { .callback = applyConfig }
-	}, {
-		.name   = "Discard settings and exit",
-		.type   = ITEM_ACTION,
-		.action = { .callback = enterMainMenu }
-	}, {
-		.name   = "Reset settings to initial values",
-		.type   = ITEM_ACTION,
-		.action = { .callback = resetConfig }
-	}, {
-		.type = ITEM_END
-	}
+	MENU_ENUM("Bank size", 0, 3, currentConfig.bankSize, 
+		"1 MB",
+		"2 MB (retail/arcade)",
+		"4 MB",
+		"8 MB (dev/arcade)"),
+	MENU_ENUM("Active banks", 0, 1, currentConfig.banks,
+		"/RAS0 only (retail/dev)",
+		"/RAS0 + /RAS1 (arcade)"),
+	MENU_SEPARATOR(),
+	MENU_ENUM("Refresh period", 0, 3, currentConfig.refreshPeriod, 
+		"256 cycles",
+		"320 cycles",
+		"384 cycles",
+		"448 cycles"),
+	MENU_ENUM("Fetch conflict delay", 0, 1, currentConfig.fetchDelay, 
+		"Disabled",
+		"Enabled"),
+	MENU_SEPARATOR(),
+	MENU_BINARY("Unknown DRAM_CTRL[2:0]", 0, 7, 3, currentConfig.unknown0),
+	MENU_BINARY("Unknown DRAM_CTRL[3] (timing?)", 0, 1, 1, currentConfig.unknown3),
+	MENU_BINARY("Unknown DRAM_CTRL[6]", 0, 1, 1, currentConfig.unknown6),
+	MENU_BINARY("Unknown DRAM_CTRL[8] (size?)", 0, 1, 1, currentConfig.unknown8),
+	MENU_BINARY("Unknown DRAM_CTRL[15:12]", 0, 15, 4, currentConfig.unknown12),
+	MENU_SEPARATOR(),
+	MENU_ACTION("Apply settings and exit", applyConfig),
+	MENU_ACTION("Discard settings and exit", enterMainMenu),
+	MENU_ACTION("Reset settings to initial values", resetConfig),
+	MENU_END(),
 };
 
 void enterRAMConfigMenu(

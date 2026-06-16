@@ -176,87 +176,23 @@ static void runAllTests(
 /* Main menu */
 
 static const MenuItem mainMenu[] = {
-	{
-		.name   = "Configure main RAM...",
-		.type   = ITEM_ACTION,
-		.action = {
-			.tag      = mainRAMConfig,
-			.callback = enterRAMConfigMenu
-		}
-	}, {
-		.name     = "VRAM size",
-		.type     = ITEM_ENUM,
-		.minValue = 0,
-		.maxValue = 1,
-		.enum_    = {
-			.value = &vramSize,
-			.items = (const char *const[]) {
-				"1 MB (retail/dev)",
-				"2 MB (arcade)"
-			}
-		}
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name     = "Number of test passes",
-		.type     = ITEM_INT,
-		.minValue =   1,
-		.maxValue = 250,
-		.int_     = { .value = &testPasses }
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name   = "Test main RAM, VRAM and SPU RAM",
-		.type   = ITEM_ACTION,
-		.action = {
-			.tag      = finalResult,
-			.callback = runAllTests
-		}
-	}, {
-		.name     = "Test main RAM",
-		.type     = ITEM_ACTION,
-		.action = {
-			.tag      = mainRAMResult,
-			.callback = runMainRAMTest
-		}
-	}, {
-		.name     = "Test VRAM",
-		.type     = ITEM_ACTION,
-		.action = {
-			.tag      = vramResult,
-			.callback = runVRAMTest
-		}
-	}, {
-		.name     = "Test SPU RAM",
-		.type     = ITEM_ACTION,
-		.action = {
-			.tag      = spuRAMResult,
-			.callback = runSPURAMTest
-		}
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "Warning: the screen will flicker while testing VRAM.",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name   = "Boot CD-ROM with current configuration",
-		.type   = ITEM_ACTION,
-		.action = { .callback = enterFastRebootMenu }
-	}, {
-		.name   = "Reboot system (discards configuration)",
-		.type   = ITEM_ACTION,
-		.action = { .callback = doFullReboot }
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name   = "About this tool...",
-		.type   = ITEM_ACTION,
-		.action = { .callback = enterAboutMenu }
-	}, {
-		.type = ITEM_END
-	}
+	MENU_ACTION_TAG("Configure main RAM...", enterRAMConfigMenu, mainRAMConfig),
+	MENU_ENUM("VRAM size", 0, 1, vramSize, "1 MB (retail/dev)", "2 MB (arcade)"),
+	MENU_SEPARATOR(),
+	MENU_INT("Number of test passes", 1, 250, testPasses),
+	MENU_SEPARATOR(),
+	MENU_ACTION_TAG("Test main RAM, VRAM and SPU RAM", runAllTests, finalResult),
+	MENU_ACTION_TAG("Test main RAM", runMainRAMTest, mainRAMResult),
+	MENU_ACTION_TAG("Test VRAM", runVRAMTest, vramResult),
+	MENU_ACTION_TAG("Test SPU RAM", runSPURAMTest, spuRAMResult),
+	MENU_SEPARATOR(),
+	MENU_TEXT("Warning: the screen will flicker while testing VRAM."),
+	MENU_SEPARATOR(),
+	MENU_ACTION("Boot CD-ROM with current configuration", enterFastRebootMenu),
+	MENU_ACTION("Reboot system (discards configuration)", doFullReboot),
+	MENU_SEPARATOR(),
+	MENU_ACTION("About this tool...", enterAboutMenu),
+	MENU_END(),
 };
 
 void enterMainMenu(RenderContext *ctx, UIState *state, const MenuItem *item) {
