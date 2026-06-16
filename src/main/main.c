@@ -14,7 +14,6 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdio.h>
 #include "common/gpu.h"
 #include "common/sio0.h"
 #include "common/spu.h"
@@ -36,7 +35,7 @@ int main(int argc, const char **argv) {
 #ifdef ENABLE_LOGGING
 	initSerialIO(115200);
 #endif
-	LOG("ps1-ram-tester " VERSION_STRING " (" __DATE__ " " __TIME__ ")");
+	LOG(PROJECT_NAME " " VERSION_STRING " (" __DATE__ " " __TIME__ ")");
 	LOG("(C) 2026 spicyjpeg");
 
 	if ((GPU_GP1 & GP1_STAT_FB_MODE_BITMASK) == GP1_STAT_FB_MODE_PAL) {
