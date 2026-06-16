@@ -16,10 +16,51 @@
 
 #pragma once
 
+#include "main/renderer.h"
 #include <stdbool.h>
 #include <stdint.h>
-#include "common/gpu.h"
-#include "main/renderer.h"
+
+#define MENU_END() {.type = ITEM_END}
+#define MENU_TITLE(text) {.name = text, .type = ITEM_TITLE}
+#define MENU_TEXT(text) {.name = text, .type = ITEM_STATIC}
+#define MENU_SEPARATOR() {.type = ITEM_SEPARATOR}
+#define MENU_ACTION(text, c)                                                   \
+  {                                                                            \
+    .name = text, .type = ITEM_ACTION, .action = {.callback = c }              \
+  }
+
+#define MENU_ACTION_TAG(text, cback, tg)                                       \
+  {                                                                            \
+    .name = text, .type = ITEM_ACTION, .action = {                             \
+      .tag = tg,                                                               \
+      .callback = cback                                                        \
+    }                                                                          \
+  }
+
+#define MENU_INT(text, min, max, var)                                          \
+  {                                                                            \
+    .name = text, .type = ITEM_INT, .minValue = min, .maxValue = max,          \
+    .int_ = {                                                                  \
+      .value = &var                                                            \
+    }                                                                          \
+  }
+
+#define MENU_ENUM(text, min, max, var, ...)                                    \
+  {                                                                            \
+    .name = text, .type = ITEM_ENUM, .minValue = min, .maxValue = max,         \
+    .enum_ = {                                                                 \
+      .value = &var,                                                           \
+      .items = (const char *const[]){__VA_ARGS__}                              \
+    }                                                                          \
+  }
+
+#define MENU_BINARY(text, min, max, bit, var)                                  \
+  {                                                                            \
+    .name = text, .type = ITEM_BINARY, .minValue = min, .maxValue = max,       \
+    .bitLength = bit, .int_ = {                                                \
+      .value = &var                                                            \
+    }                                                                          \
+  }
 
 typedef enum {
 	// Static items

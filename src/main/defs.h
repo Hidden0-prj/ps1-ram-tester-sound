@@ -18,6 +18,10 @@
 
 #include <stdio.h>
 
+#ifndef PROJECT_NAME
+#define PROJECT_NAME "ps1-ram-tester"
+#endif
+
 #ifndef VERSION
 #define VERSION "<unknown build>"
 #endif
