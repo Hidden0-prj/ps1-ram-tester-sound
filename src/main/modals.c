@@ -22,6 +22,15 @@
 #include "main/ui.h"
 #include "ps1/registers.h"
 
+#define MENU_TITLE(text) {.name = text, .type = ITEM_TITLE}
+#define MENU_TEXT(text) {.name = text, .type = ITEM_STATIC}
+#define MENU_SEPARATOR() {.type = ITEM_SEPARATOR}
+#define MENU_ACTION(t, a)                                          \
+    {                                                              \
+        .name = t, .type = ITEM_ACTION, .action = {.callback = a } \
+    }
+#define MENU_END() {.type = ITEM_END}
+
 /* Reboot functions */
 
 static void showRebootProgress(RenderContext *ctx, const char *message) {
@@ -59,73 +68,31 @@ void doFullReboot(RenderContext *ctx, UIState *state, const MenuItem *item) {
 /* Fast reboot warning and error menus */
 
 static const MenuItem rebootWarningMenu[] = {
-	{
-		.name = "Warning",
-		.type = ITEM_TITLE
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "CD-ROM booting relies on injecting kernel patches to apply",
-		.type = ITEM_STATIC
-	}, {
-		.name = "the new RAM configuration. This process is by its nature",
-		.type = ITEM_STATIC
-	}, {
-		.name = "hacky and may introduce compatibility issues. Moreover,",
-		.type = ITEM_STATIC
-	}, {
-		.name = "some games and applications are known to break when the",
-		.type = ITEM_STATIC
-	}, {
-		.name = "default main RAM configuration is changed.",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "If you understand the risks, insert a valid disc and close",
-		.type = ITEM_STATIC
-	}, {
-		.name = "the lid before proceeding.",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name   = "Boot CD-ROM",
-		.type   = ITEM_ACTION,
-		.action = { .callback = doFastReboot }
-	}, {
-		.name   = "Cancel",
-		.type   = ITEM_ACTION,
-		.action = { .callback = enterMainMenu }
-	}, {
-		.type = ITEM_END
-	}
+    MENU_TITLE("WARNINNG"),
+    MENU_SEPARATOR(),
+    MENU_TEXT("CD-ROM booting relies on injecting kernel patches to apply"),
+    MENU_TEXT("the new RAM configuration. This process is by its nature"),
+    MENU_TEXT("hacky and may introduce compatibility issues. Moreover,"),
+    MENU_TEXT("some games and applications are known to break when the"),
+    MENU_TEXT("default main RAM configuration is changed."),
+    MENU_SEPARATOR(),
+    MENU_TEXT("If you understand the risks, insert a valid disc and close"),
+    MENU_TEXT("the lid before proceeding."),
+    MENU_SEPARATOR(),
+    MENU_ACTION("Boot CD-ROM", doFastReboot),
+    MENU_ACTION("Cancel", enterMainMenu),
+    MENU_END(),
 };
 
 static const MenuItem rebootErrorMenu[] = {
-	{
-		.name = "Error",
-		.type = ITEM_TITLE
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "This console's BIOS ROM version is not supported or not",
-		.type = ITEM_STATIC
-	}, {
-		.name = "compatible with the kernel patch used for CD-ROM booting.",
-		.type = ITEM_STATIC
-	}, {
-		.name = "Only Sony's own retail BIOS ROMs are currently supported.",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name   = "Back",
-		.type   = ITEM_ACTION,
-		.action = { .callback = enterMainMenu }
-	}, {
-		.type = ITEM_END
-	}
+    MENU_TITLE("ERROR"),
+    MENU_SEPARATOR(),
+    MENU_TEXT("This console's BIOS ROM version is not supported or not"),
+    MENU_TEXT("compatible with the kernel patch used for CD-ROM booting."),
+    MENU_TEXT("Only Sony's own retail BIOS ROMs are currently supported."),
+    MENU_SEPARATOR(),
+    MENU_ACTION("Back", enterMainMenu),
+    MENU_END(),
 };
 
 void enterFastRebootMenu(
@@ -148,50 +115,21 @@ void enterFastRebootMenu(
 /* "About ps1-ram-tester" menu */
 
 static const MenuItem aboutMenu[] = {
-	{
-		.name = "- ps1-ram-tester -",
-		.type = ITEM_TITLE
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "Version " VERSION_STRING,
-		.type = ITEM_STATIC
-	}, {
-		.name = "Copyright (C) 2026 spicyjpeg",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "Licensed under the MIT license.",
-		.type = ITEM_STATIC
-	}, {
-		.name = "Source code available at:",
-		.type = ITEM_STATIC
-	}, {
-		.name = "    <https://github.com/spicyjpeg/ps1-ram-tester>",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "This tool is completely free and open source. Hopefully",
-		.type = ITEM_STATIC
-	}, {
-		.name = "you did not get tricked into paying for it.",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name = "Developed with no AI assistance whatsoever.",
-		.type = ITEM_STATIC
-	}, {
-		.type = ITEM_SEPARATOR
-	}, {
-		.name   = "Back",
-		.type   = ITEM_ACTION,
-		.action = { .callback = enterMainMenu }
-	}, {
-		.type = ITEM_END
-	}
+    MENU_TEXT("- " PROJECT_NAME " -"),
+    MENU_SEPARATOR(),
+    MENU_TEXT("Version " VERSION_STRING),
+    MENU_TEXT("Copyright (C) 2026 spicyjpeg, NaokiS28"),
+    MENU_SEPARATOR(),
+    MENU_TEXT("Licensed under the MIT license."),
+    MENU_TEXT("Source code available at:"),
+    MENU_TEXT("    <https://github.com/spicyjpeg/ps1-ram-tester>"),
+    MENU_TEXT("This tool is completely free and open source. Hopefully"),
+    MENU_TEXT("you did not get tricked into paying for it."),
+    MENU_SEPARATOR(),
+    MENU_TEXT("Developed with no AI assistance whatsoever."),
+    MENU_SEPARATOR(),
+    MENU_ACTION("Back", enterMainMenu),
+    MENU_END(),
 };
 
 void enterAboutMenu(RenderContext *ctx, UIState *state, const MenuItem *item) {
