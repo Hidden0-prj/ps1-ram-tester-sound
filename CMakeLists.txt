@@ -79,6 +79,8 @@ target_compile_definitions(
 	"${RELEASE_NAME}" PRIVATE
 	$<$<BOOL:${ENABLE_LOGGING}>:ENABLE_LOGGING=1>
 	VERSION="${PROJECT_VERSION}"
+	PROJECT_NAME="${PROJECT_NAME}"
+	PROJECT_URL="${PROJECT_HOMEPAGE_URL}"
 )
 
 convertImage(assets/background.png 4 assets/bgTexture.dat assets/bgPalette.dat)
