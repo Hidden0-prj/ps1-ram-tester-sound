@@ -23,6 +23,7 @@
 #include "main/modals.h"
 #include "main/ramconfig.h"
 #include "main/renderer.h"
+#include "main/sound.h"
 #include "main/test.h"
 #include "main/ui.h"
 #include "ps1/gpucmd.h"
@@ -159,6 +160,13 @@ static void runSPURAMTest(
 			error.address,
 			error.pass + 1
 		);
+
+	// The test above overwrites all of SPU RAM (including the UI sounds and
+	// BGM data that live there) with test patterns, so both need to be
+	// re-uploaded and the BGM restarted from scratch - simply re-keying the
+	// channel isn't enough, since the actual sample bytes are gone.
+	initSound();
+	playBGM();
 
 	enterMainMenu(ctx, state, item);
 }
