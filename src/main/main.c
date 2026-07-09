@@ -50,6 +50,7 @@ int main(int argc, const char **argv) {
 
 	initSPU();
 	initSound();
+	playBGM();
 	initControllerBus();
 	fixRetailRAMConfig();
 

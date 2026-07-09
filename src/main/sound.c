@@ -18,9 +18,18 @@
 
 // The pickup.vag data embedded via addBinaryFile() in CMakeLists.txt.
 extern const uint8_t uiSound[];
+// The bgm.vag data embedded via addBinaryFile() in CMakeLists.txt - a
+// 20-second looping excerpt (the full track doesn't fit in SPU RAM
+// alongside the UI sounds; see the ADSR2/loop flag comments in playBGM()
+// for how the looping itself works).
+extern const uint8_t bgmSound[];
 
 #define SCROLL_CHANNEL  0
 #define CONFIRM_CHANNEL 1
+#define BGM_CHANNEL     2
+
+// Background music plays at half the volume of the UI sound effects.
+#define BGM_VOLUME (SPU_MAX_VOLUME / 2)
 
 // Standard 48-byte .VAG header. All multi-byte fields are big-endian.
 typedef struct {
@@ -40,17 +49,28 @@ static uint32_t swapEndian(uint32_t value) {
 	     | ((value & 0xff000000) >> 24);
 }
 
-static uint32_t uiSoundOffset = 0;
+static uint32_t uiSoundOffset  = 0;
+static uint32_t bgmSoundOffset = 0;
 
 void initSound(void) {
-	const VAGHeader *header = (const VAGHeader *) uiSound;
+	const VAGHeader *uiHeader = (const VAGHeader *) uiSound;
 
-	uint32_t dataSize    = swapEndian(header->dataSize);
+	uint32_t uiDataSize    = swapEndian(uiHeader->dataSize);
 	// SPU DMA transfers are done in 64-byte blocks.
-	uint32_t alignedSize = (dataSize + 63) & ~((uint32_t) 63);
+	uint32_t uiAlignedSize = (uiDataSize + 63) & ~((uint32_t) 63);
 
 	uiSoundOffset = SPU_RAM_ALLOC_OFFSET;
-	sendSPURAMData(uiSound + sizeof(VAGHeader), uiSoundOffset, alignedSize);
+	sendSPURAMData(uiSound + sizeof(VAGHeader), uiSoundOffset, uiAlignedSize);
+	waitForSPUDMADone();
+
+	// Place the BGM data right after the UI sound, so nothing overlaps.
+	const VAGHeader *bgmHeader = (const VAGHeader *) bgmSound;
+
+	uint32_t bgmDataSize    = swapEndian(bgmHeader->dataSize);
+	uint32_t bgmAlignedSize = (bgmDataSize + 63) & ~((uint32_t) 63);
+
+	bgmSoundOffset = uiSoundOffset + uiAlignedSize;
+	sendSPURAMData(bgmSound + sizeof(VAGHeader), bgmSoundOffset, bgmAlignedSize);
 	waitForSPUDMADone();
 }
 
@@ -88,4 +108,28 @@ void playScrollSound(void) {
 
 void playConfirmSound(void) {
 	playUISound(CONFIRM_CHANNEL);
+}
+
+void playBGM(void) {
+	const VAGHeader *header = (const VAGHeader *) bgmSound;
+
+	uint32_t sampleRate = swapEndian(header->sampleRate);
+	uint32_t pitch       = (sampleRate << 12) / 44100;
+
+	SPU_KOFF0 = 1 << BGM_CHANNEL;
+
+	SPU_CH_VOLL (BGM_CHANNEL) = BGM_VOLUME;
+	SPU_CH_VOLR (BGM_CHANNEL) = BGM_VOLUME;
+	SPU_CH_PITCH(BGM_CHANNEL) = pitch;
+	SPU_CH_SSA  (BGM_CHANNEL) = bgmSoundOffset / SPU_RAM_ADDR_UNIT;
+	// Loop start address: where the SPU jumps back to once it reaches the
+	// End+Repeat flag encoded on the sample's final ADPCM block (see
+	// wav2vag.py's --loop option). Pointing it at the sample's own start
+	// makes the whole clip loop seamlessly, entirely in hardware - no
+	// per-frame code needed anywhere else in the project.
+	SPU_CH_LSAX (BGM_CHANNEL) = bgmSoundOffset / SPU_RAM_ADDR_UNIT;
+	SPU_CH_ADSR1(BGM_CHANNEL) = 0x00ff;
+	SPU_CH_ADSR2(BGM_CHANNEL) = 0x0000;
+
+	SPU_KON0 = 1 << BGM_CHANNEL;
 }

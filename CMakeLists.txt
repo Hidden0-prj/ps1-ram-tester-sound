@@ -91,6 +91,7 @@ addBinaryFile("${RELEASE_NAME}" fontTexture "${PROJECT_BINARY_DIR}/assets/fontTe
 addBinaryFile("${RELEASE_NAME}" fontPalette "${PROJECT_BINARY_DIR}/assets/fontPalette.dat")
 
 addBinaryFile("${RELEASE_NAME}" uiSound assets/pickup.vag)
+addBinaryFile("${RELEASE_NAME}" bgmSound assets/bgm.vag)
 
 ## CD-ROM image
 

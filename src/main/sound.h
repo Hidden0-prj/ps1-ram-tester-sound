@@ -20,6 +20,11 @@ void playScrollSound(void);
 // off early.
 void playConfirmSound(void);
 
+// Starts the looping background music. Call once at startup, after
+// initSound(). The SPU loops it in hardware from then on - no per-frame
+// code needed anywhere else.
+void playBGM(void);
+
 #ifdef __cplusplus
 }
 #endif
