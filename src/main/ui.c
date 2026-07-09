@@ -23,6 +23,7 @@
 #include "main/defs.h"
 #include "main/font.h"
 #include "main/renderer.h"
+#include "main/sound.h"
 #include "main/ui.h"
 
 #define MARGIN_LEFT   16
@@ -67,6 +68,8 @@ static size_t getMenuLength(const MenuItem *menu) {
 
 static void moveMenuCursor(UIState *state, int step) {
 	const MenuItem *item = &state->currentMenu[state->menuCursor];
+
+	playScrollSound();
 
 	// This is very crude and will break if step is not 1 or -1.
 	do {
@@ -255,8 +258,10 @@ void updateMenu(RenderContext *ctx, UIState *state, uint16_t buttons) {
 
 	switch (item->type) {
 		case ITEM_ACTION:
-			if (pressed & (PAD_BTN_START | PAD_BTN_CIRCLE | PAD_BTN_CROSS))
+			if (pressed & (PAD_BTN_START | PAD_BTN_CIRCLE | PAD_BTN_CROSS)) {
+				playConfirmSound();
 				item->action.callback(ctx, state, item);
+			}
 			break;
 
 		case ITEM_INT:

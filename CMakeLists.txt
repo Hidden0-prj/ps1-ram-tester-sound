@@ -67,6 +67,7 @@ addPS1Executable(
 	src/main/modals.c
 	src/main/ramconfig.c
 	src/main/renderer.c
+	src/main/sound.c
 	src/main/test.c
 	src/main/ui.c
 )
@@ -88,6 +89,8 @@ addBinaryFile("${RELEASE_NAME}" bgPalette "${PROJECT_BINARY_DIR}/assets/bgPalett
 convertImage(assets/font.png 4 assets/fontTexture.dat assets/fontPalette.dat)
 addBinaryFile("${RELEASE_NAME}" fontTexture "${PROJECT_BINARY_DIR}/assets/fontTexture.dat")
 addBinaryFile("${RELEASE_NAME}" fontPalette "${PROJECT_BINARY_DIR}/assets/fontPalette.dat")
+
+addBinaryFile("${RELEASE_NAME}" uiSound assets/pickup.vag)
 
 ## CD-ROM image
 

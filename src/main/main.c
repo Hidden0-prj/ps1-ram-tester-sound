@@ -22,6 +22,7 @@
 #include "main/mainmenu.h"
 #include "main/ramconfig.h"
 #include "main/renderer.h"
+#include "main/sound.h"
 #include "main/ui.h"
 #include "ps1/gpucmd.h"
 #include "ps1/registers.h"
@@ -48,6 +49,7 @@ int main(int argc, const char **argv) {
 	}
 
 	initSPU();
+	initSound();
 	initControllerBus();
 	fixRetailRAMConfig();
 
