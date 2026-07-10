@@ -1,5 +1,5 @@
 
-                               - ps1-ram-tester -
+                               - PSX-iTests -
                                  Version ${PROJECT_VERSION}
 
 [ Usage ]

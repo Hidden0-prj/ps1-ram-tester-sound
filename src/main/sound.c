@@ -23,6 +23,10 @@ extern const uint8_t uiSound[];
 // alongside the UI sounds; see the ADSR2/loop flag comments in playBGM()
 // for how the looping itself works).
 extern const uint8_t bgmSound[];
+// The spu.vag data embedded via addBinaryFile() in CMakeLists.txt - a
+// dedicated tone used only by the SPU channel test, distinct from the
+// scroll/confirm UI sound.
+extern const uint8_t spuTestSound[];
 
 #define SCROLL_CHANNEL  0
 #define CONFIRM_CHANNEL 1
@@ -49,8 +53,9 @@ static uint32_t swapEndian(uint32_t value) {
 	     | ((value & 0xff000000) >> 24);
 }
 
-static uint32_t uiSoundOffset  = 0;
-static uint32_t bgmSoundOffset = 0;
+static uint32_t uiSoundOffset      = 0;
+static uint32_t bgmSoundOffset     = 0;
+static uint32_t spuTestSoundOffset = 0;
 
 void initSound(void) {
 	const VAGHeader *uiHeader = (const VAGHeader *) uiSound;
@@ -72,10 +77,26 @@ void initSound(void) {
 	bgmSoundOffset = uiSoundOffset + uiAlignedSize;
 	sendSPURAMData(bgmSound + sizeof(VAGHeader), bgmSoundOffset, bgmAlignedSize);
 	waitForSPUDMADone();
+
+	// Place the SPU test tone right after the BGM data.
+	const VAGHeader *spuTestHeader = (const VAGHeader *) spuTestSound;
+
+	uint32_t spuTestDataSize    = swapEndian(spuTestHeader->dataSize);
+	uint32_t spuTestAlignedSize = (spuTestDataSize + 63) & ~((uint32_t) 63);
+
+	spuTestSoundOffset = bgmSoundOffset + bgmAlignedSize;
+	sendSPURAMData(
+		spuTestSound + sizeof(VAGHeader), spuTestSoundOffset, spuTestAlignedSize
+	);
+	waitForSPUDMADone();
 }
 
-static void playUISound(int channel) {
-	const VAGHeader *header = (const VAGHeader *) uiSound;
+static void playSample(
+	const uint8_t *soundData,
+	uint32_t      soundOffset,
+	int           channel
+) {
+	const VAGHeader *header = (const VAGHeader *) soundData;
 
 	uint32_t sampleRate = swapEndian(header->sampleRate);
 	uint32_t pitch       = (sampleRate << 12) / 44100;
@@ -90,7 +111,7 @@ static void playUISound(int channel) {
 	SPU_CH_VOLL (channel) = SPU_MAX_VOLUME;
 	SPU_CH_VOLR (channel) = SPU_MAX_VOLUME;
 	SPU_CH_PITCH(channel) = pitch;
-	SPU_CH_SSA  (channel) = uiSoundOffset / SPU_RAM_ADDR_UNIT;
+	SPU_CH_SSA  (channel) = soundOffset / SPU_RAM_ADDR_UNIT;
 	// Instant attack, slowest decay, max sustain level: holds at full
 	// volume until the sample's own end-of-data flag stops it.
 	SPU_CH_ADSR1(channel) = 0x00ff;
@@ -103,11 +124,15 @@ static void playUISound(int channel) {
 }
 
 void playScrollSound(void) {
-	playUISound(SCROLL_CHANNEL);
+	playSample(uiSound, uiSoundOffset, SCROLL_CHANNEL);
 }
 
 void playConfirmSound(void) {
-	playUISound(CONFIRM_CHANNEL);
+	playSample(uiSound, uiSoundOffset, CONFIRM_CHANNEL);
+}
+
+void playTestTone(int channel) {
+	playSample(spuTestSound, spuTestSoundOffset, channel);
 }
 
 void playBGM(void) {

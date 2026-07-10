@@ -18,7 +18,7 @@
 #include <stddef.h>
 #include <stdint.h>
 #include "main/defs.h"
-#include "main/mainmenu.h"
+#include "main/ramtester.h"
 #include "main/ramconfig.h"
 #include "main/renderer.h"
 #include "main/ui.h"
@@ -105,7 +105,7 @@ static void applyConfig(
 	const MenuItem *item
 ) {
 	setMainRAMConfig(&currentConfig);
-	enterMainMenu(ctx, state, item);
+	enterRAMTesterMenu(ctx, state, item);
 }
 
 static void resetConfig(
@@ -223,7 +223,7 @@ static const MenuItem ramConfigMenu[] = {
 	}, {
 		.name   = "Discard settings and exit",
 		.type   = ITEM_ACTION,
-		.action = { .callback = enterMainMenu }
+		.action = { .callback = enterRAMTesterMenu }
 	}, {
 		.name   = "Reset settings to initial values",
 		.type   = ITEM_ACTION,

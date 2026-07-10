@@ -25,6 +25,14 @@ void playConfirmSound(void);
 // code needed anywhere else.
 void playBGM(void);
 
+// Plays the dedicated SPU test tone on an arbitrary channel (0-23). Used
+// by the SPU channel test to check each channel individually. Note that
+// channels 0-2 are normally used for scroll/confirm/BGM - testing those
+// channels will interrupt whatever they were doing, so the caller is
+// responsible for restoring normal playback afterward (see
+// initSound()/playBGM()).
+void playTestTone(int channel);
+
 #ifdef __cplusplus
 }
 #endif

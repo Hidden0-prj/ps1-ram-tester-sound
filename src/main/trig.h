@@ -1,5 +1,5 @@
 /*
- * ps1-ram-tester - (C) 2026 spicyjpeg
+ * ps1-bare-metal - (C) 2023-2025 spicyjpeg
  *
  * Permission to use, copy, modify, and/or distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
@@ -14,15 +14,26 @@
  * PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdint.h>
-#include "main/renderer.h"
-#include "main/ui.h"
+#pragma once
+
+#define ISIN_SHIFT  10
+#define ISIN2_SHIFT 15
+#define ISIN_PI     (1 << (ISIN_SHIFT  + 1))
+#define ISIN2_PI    (1 << (ISIN2_SHIFT + 1))
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-void enterMainMenu(RenderContext *ctx, UIState *state, const MenuItem *item);
+int isin(int x);
+int isin2(int x);
+
+static inline int icos(int x) {
+	return isin(x + (1 << ISIN_SHIFT));
+}
+static inline int icos2(int x) {
+	return isin2(x + (1 << ISIN2_SHIFT));
+}
 
 #ifdef __cplusplus
 }

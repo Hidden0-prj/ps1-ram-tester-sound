@@ -1,4 +1,6 @@
-# ps1-ram-tester - (C) 2026 spicyjpeg
+# PSX-iTests - build script adapted from ps1-ram-tester / ps1-bare-metal
+# by spicyjpeg (https://github.com/spicyjpeg), used here under the MIT
+# license. See LICENSE for the full original license text.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -17,11 +19,11 @@ cmake_minimum_required(VERSION 3.25)
 set(CMAKE_TOOLCHAIN_FILE "${CMAKE_CURRENT_LIST_DIR}/cmake/toolchain.cmake")
 
 project(
-	ps1-ram-tester
+	PSX-iTests
 	LANGUAGES    C ASM
 	VERSION      1.0.0
-	DESCRIPTION  "PlayStation 1 RAM, VRAM and SPU RAM testing tool"
-	HOMEPAGE_URL "https://github.com/spicyjpeg/ps1-ram-tester"
+	DESCRIPTION  "PlayStation 1 basic CPU/GPU/SPU functionality test tool"
+	HOMEPAGE_URL "https://github.com/spicyjpeg/ps1-bare-metal"
 )
 
 include(cmake/options.cmake)
@@ -60,15 +62,21 @@ addPS1Executable(
 	src/common/reboot.s
 	src/common/sio0.c
 	src/common/spu.c
+	src/main/cpu_bench.c
 	src/main/crt0.s
 	src/main/font.c
+	src/main/gpu_colorbars.c
+	src/main/gpu_cube.c
 	src/main/main.c
 	src/main/mainmenu.c
 	src/main/modals.c
 	src/main/ramconfig.c
+	src/main/ramtester.c
 	src/main/renderer.c
 	src/main/sound.c
+	src/main/spu_channel_test.c
 	src/main/test.c
+	src/main/trig.c
 	src/main/ui.c
 )
 target_compile_options(
@@ -92,6 +100,7 @@ addBinaryFile("${RELEASE_NAME}" fontPalette "${PROJECT_BINARY_DIR}/assets/fontPa
 
 addBinaryFile("${RELEASE_NAME}" uiSound assets/pickup.vag)
 addBinaryFile("${RELEASE_NAME}" bgmSound assets/bgm.vag)
+addBinaryFile("${RELEASE_NAME}" spuTestSound assets/spu.vag)
 
 ## CD-ROM image
 

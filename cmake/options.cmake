@@ -1,4 +1,6 @@
-# ps1-ram-tester - (C) 2026 spicyjpeg
+# PSX-iTests - adapted from ps1-ram-tester by spicyjpeg
+# (https://github.com/spicyjpeg), used here under the MIT license. See
+# LICENSE for the full original license text.
 #
 # Permission to use, copy, modify, and/or distribute this software for any
 # purpose with or without fee is hereby granted, provided that the above
@@ -28,7 +30,7 @@ find_program(
 ## Release information
 
 set(
-	RELEASE_INFO "${PROJECT_NAME} ${PROJECT_VERSION} - (C) 2026 spicyjpeg"
+	RELEASE_INFO "${PROJECT_NAME} ${PROJECT_VERSION}"
 	CACHE STRING "Executable description and version string, placed in the \
 executable header (optional)"
 )

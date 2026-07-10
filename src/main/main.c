@@ -37,8 +37,7 @@ int main(int argc, const char **argv) {
 #ifdef ENABLE_LOGGING
 	initSerialIO(115200);
 #endif
-	LOG("ps1-ram-tester " VERSION_STRING " (" __DATE__ " " __TIME__ ")");
-	LOG("(C) 2026 spicyjpeg");
+	LOG("PSX-iTests " VERSION_STRING " (" __DATE__ " " __TIME__ ")");
 
 	if ((GPU_GP1 & GP1_STAT_FB_MODE_BITMASK) == GP1_STAT_FB_MODE_PAL) {
 		LOG("using PAL mode");

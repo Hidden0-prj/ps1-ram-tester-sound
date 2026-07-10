@@ -18,6 +18,7 @@
 #include "main/defs.h"
 #include "main/mainmenu.h"
 #include "main/modals.h"
+#include "main/ramtester.h"
 #include "main/renderer.h"
 #include "main/ui.h"
 #include "ps1/registers.h"
@@ -43,6 +44,8 @@ static void doFastReboot(
 	(void) item;
 
 	showRebootProgress(ctx, "Waiting for kernel to load CD-ROM...");
+	// vramSize is set by the RAM/VRAM/SPU RAM tester submenu, defaulting to
+	// 0 (standard 1 MB VRAM) if that submenu was never entered.
 	softFastRebootWithConfig(DRAM_CTRL & 0xffff, vramSize);
 	__builtin_unreachable();
 }
@@ -149,7 +152,7 @@ void enterFastRebootMenu(
 
 static const MenuItem aboutMenu[] = {
 	{
-		.name = "- ps1-ram-tester -",
+		.name = "- PSX-iTests -",
 		.type = ITEM_TITLE
 	}, {
 		.type = ITEM_SEPARATOR
@@ -157,18 +160,21 @@ static const MenuItem aboutMenu[] = {
 		.name = "Version " VERSION_STRING,
 		.type = ITEM_STATIC
 	}, {
-		.name = "Copyright (C) 2026 spicyjpeg",
+		.name = "Basic CPU/GPU/SPU functionality test tool.",
 		.type = ITEM_STATIC
 	}, {
 		.type = ITEM_SEPARATOR
 	}, {
-		.name = "Licensed under the MIT license.",
+		.name = "Built on the ps1-bare-metal library and",
 		.type = ITEM_STATIC
 	}, {
-		.name = "Source code available at:",
+		.name = "ps1-ram-tester's UI framework by spicyjpeg,",
 		.type = ITEM_STATIC
 	}, {
-		.name = "    <https://github.com/spicyjpeg/ps1-ram-tester>",
+		.name = "licensed under the MIT license.",
+		.type = ITEM_STATIC
+	}, {
+		.name = "    <https://github.com/spicyjpeg/ps1-bare-metal>",
 		.type = ITEM_STATIC
 	}, {
 		.type = ITEM_SEPARATOR
