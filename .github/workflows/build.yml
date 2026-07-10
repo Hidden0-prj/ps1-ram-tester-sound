@@ -24,7 +24,7 @@ jobs:
     - name: Fetch repo contents
       uses: actions/checkout@v6
       with:
-        path: ps1-ram-tester
+        path: PSX-iTests
 
     - name: Install prerequisites
       run: |
@@ -33,29 +33,29 @@ jobs:
 
     - name: Set up Python virtual environment
       run: |
-        python3 -m venv ps1-ram-tester/env
-        source ps1-ram-tester/env/bin/activate
-        pip3 install -r ps1-ram-tester/tools/requirements.txt
+        python3 -m venv PSX-iTests/env
+        source PSX-iTests/env/bin/activate
+        pip3 install -r PSX-iTests/tools/requirements.txt
 
     - name: Build GCC toolchain
       if:   ${{ steps.cache.outputs.cache-hit != 'true' }}
       run: |
-        ps1-ram-tester/.github/scripts/buildToolchain.sh gcc-mipsel-none-elf mipsel-none-elf
+        bash PSX-iTests/.github/scripts/buildToolchain.sh gcc-mipsel-none-elf mipsel-none-elf
 
     - name: Build project
       run: |
-        ps1-ram-tester/.github/scripts/buildRelease.sh
+        bash PSX-iTests/.github/scripts/buildRelease.sh
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v7
       with:
         name:              build
         if-no-files-found: error
-        path:              ps1-ram-tester-*.zip
+        path:              PSX-iTests-*.zip
 
     - name: Publish release
       if:   ${{ github.ref_type == 'tag' }}
       uses: softprops/action-gh-release@v3
       with:
         fail_on_unmatched_files: true
-        files:                   ps1-ram-tester-*.zip
+        files:                   PSX-iTests-*.zip
